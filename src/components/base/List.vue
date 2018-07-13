@@ -1,238 +1,142 @@
 <template>
   <div class="Water fullScreen">
-    <hui-list1 class="theme2" :data="data" theme="HuiList1-theme2" @list-click="listClick"></hui-list1>
-    <float-ball v-if="showFloatBall" right="15" bottom="15" @ball-click="ballClick">
-      <hui-icon-normal-explain class="iconExplain" v-if="isRain"></hui-icon-normal-explain>
-      <hui-icon-normal-wind class="iconExplain" v-if="isWind"></hui-icon-normal-wind>
-    </float-ball>
+    <hui-list1
+      v-if="isWater"
+      class="theme2"
+      :data="data"
+      theme="HuiList1-theme2"
+      @list-click="listClick"
+    >
+    </hui-list1>
+    <ul
+      class="waterOrigin"
+      v-if="isRain"
+    >
+      <li class="arrow-r" v-for="(item, index) in data" :key="index" @click="listClick(item)">
+        <h6 class="title">{{item.name}}</h6>
+        <p>
+          <span>管理单位：</span>
+          <span>{{item.manUnit}}</span>
+        </p>
+        <p>
+          <span>设计年供水量：</span>
+          <span>{{item.dywsW}}</span>
+          <span>万m<sup>3</sup></span>
+        </p>
+        <p>
+          <span>水质目标：</span>
+          <span>{{item.goal}}</span>
+        </p>
+      </li>
+    </ul>
   </div>
 </template>
 
 <script>
-import FloatBall from '@/components/base/FloatBall'
-const waterList = [
-  {
-    'id': 1,
-    'title': '中宁站',
-    'time': '2018-06-13 14:22',
-    'status': 1,
-    'children': [
-      {
-        'title': '水位',
-        'value': '55.4',
-        'unit': 'm'
-      },
-      {
-        'title': '预警水位',
-        'value': '1443.32',
-        'unit': 'm'
-      }
-    ]
-  },
-  {
-    'id': 2,
-    'title': '红堡寺站',
-    'time': '2018-06-13 14:22',
-    'children': [
-      {
-        'title': '水位',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '预警水位',
-        'value': '1443.32',
-        'unit': 'm'
-      }
-    ]
-  },
-  {
-    'id': 3,
-    'title': '河西镇',
-    'time': '2018-06-13 14:22',
-    'children': [
-      {
-        'title': '水位',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '预警水位',
-        'value': '1443.32',
-        'unit': 'm'
-      }
-    ]
-  }
-]
-const rainList = [
-  {
-    'id': 1,
-    'title': '中宁站',
-    'time': '2018-06-13 14:22',
-    'status': 1,
-    'children': [
-      {
-        'title': '今日雨量',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '当年累计',
-        'value': '1443.32',
-        'unit': 'm'
-      }
-    ]
-  },
-  {
-    'id': 2,
-    'title': '红堡寺站',
-    'time': '2018-06-13 14:22',
-    'children': [
-      {
-        'title': '今日雨量',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '当年累计',
-        'value': '1443.32',
-        'unit': 'm'
-      }
-    ]
-  },
-  {
-    'id': 3,
-    'title': '河西镇',
-    'time': '2018-06-13 14:22',
-    'children': [
-      {
-        'title': '今日雨量',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '当年累计',
-        'value': '1443.32',
-        'unit': 'm'
-      }
-    ]
-  }
-]
-const windList = [
-  {
-    'id': 1,
-    'title': '中宁站',
-    'time': '2018-06-13 14:22',
-    'status': 1,
-    'children': [
-      {
-        'title': '风速',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '风力等级',
-        'value': '12',
-        'unit': ''
-      },
-      {
-        'title': '风向',
-        'value': '东南风',
-        'unit': ''
-      }
-    ]
-  },
-  {
-    'id': 2,
-    'title': '红堡寺站',
-    'time': '2018-06-13 14:22',
-    'children': [
-      {
-        'title': '风速',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '风力等级',
-        'value': '12',
-        'unit': ''
-      },
-      {
-        'title': '风向',
-        'value': '东南风',
-        'unit': ''
-      }
-    ]
-  },
-  {
-    'id': 3,
-    'title': '河西镇',
-    'time': '2018-06-13 14:22',
-    'children': [
-      {
-        'title': '风速',
-        'value': '55.4',
-        'unit': 'mm'
-      },
-      {
-        'title': '风力等级',
-        'value': '12',
-        'unit': ''
-      },
-      {
-        'title': '风向',
-        'value': '东南风',
-        'unit': ''
-      }
-    ]
-  }
-]
+import * as api from '@/assets/js/api'
+import {success, noDataHintTxt} from '@/assets/js/config'
+import {loading, handleDecimalLength, getServerErrorMessageAsHtml} from '@/assets/js/util'
 export default {
   name: 'Water',
-  components: {
-    FloatBall
-  },
   data () {
     return {
-      showFloatBall: false,
       data: [],
-      isRain: false,
-      isWind: false,
-      isWater: false
+      isWater: false,
+      isRain: false
     }
   },
+  beforeRouteLeave (to, from, next) {
+    loading.remove()
+    next()
+  },
   methods: {
-    listClick (item, index) {
+    listClick (item) {
       const parentPath = this.$route.path
-      this.$router.push({path: `${parentPath}/${item.id}`, query: {title: item.title}})
+      const name = this.$route.name.toLowerCase()
+      let param
+      switch (name) {
+        case 'water':
+          param = item.wiucd
+          break
+        case 'rain':
+          param = item.stcd
+          break
+      }
+      this.$router.push({path: `${parentPath}/${param}`, query: {title: item.name}})
     },
-    ballClick (iconClass) {
-      const parentPath = this.$route.path
-      const name = this.$route.name
-      this.$router.push(`${parentPath}/${name}Condition`)
-    },
-    handleFloatBallStatus () {
+    handleType () {
       const name = this.$route.name.toLowerCase()
       switch (name) {
+        case 'water':
+          this.getWrwibList()
+          this.isWater = true
+          break
         case 'rain':
-          this.showFloatBall = true
-          this.data = rainList
+          this.getWaterList()
           this.isRain = true
           break
-        case 'wind':
-          this.showFloatBall = true
-          this.data = windList
-          this.isWind = true
-          break
-        default:
-          this.showFloatBall = false
-          this.data = waterList
-          this.isWater = true
       }
+    },
+    getWrwibList () {
+      api.getWrwibList()
+        .then((res) => {
+          if (res.status === success) {
+            let data = res.data
+            if (Array.isArray(data)) {
+              this.data = this.convertWrwibList(data)
+            } else if (data) {
+              this.$message({content: noDataHintTxt, icon: 'hui-warn'})
+            }
+          } else {
+            this.$message({content: res.msg, icon: 'hui-warn'})
+          }
+        }, (err) => {
+          this.$message({content: getServerErrorMessageAsHtml(err, 'List.vue->getWrwibList'), icon: 'hui-warn'})
+        })
+    },
+    getWaterList () {
+      api.getWaterList()
+        .then((res) => {
+          if (res.status === success) {
+            let data = res.data
+            if (Array.isArray(data)) {
+              this.data = data
+            } else if (data) {
+              this.$message({content: noDataHintTxt, icon: 'hui-warn'})
+            }
+          } else {
+            this.$message({content: res.msg, icon: 'hui-warn'})
+          }
+        }, (err) => {
+          this.$message({content: getServerErrorMessageAsHtml(err, 'List.vue->getWaterList'), icon: 'hui-warn'})
+        })
+    },
+    convertWrwibList (data) {
+      let res = []
+      data.forEach((item) => {
+        let obj = {
+          children: []
+        }
+        obj.wiucd = item.wiucd
+        obj.title = item.wiunm ? item.wiunm.trim() : ''
+        obj.status = item.warnType
+        obj.children.push({
+          title: '年度取水量',
+          value: item.supplyWater ? handleDecimalLength(item.supplyWater) : '--',
+          unit: '万m<sup>3</sup>'
+        })
+        obj.children.push({
+          title: '年计划用水',
+          value: item.planWater ? handleDecimalLength(item.planWater) : '--',
+          unit: '万m<sup>3</sup>'
+        })
+        res.push(obj)
+      })
+      return res
     }
   },
   created () {
-    this.handleFloatBallStatus()
+    this.handleType()
   }
 }
 </script>
@@ -250,6 +154,25 @@ export default {
     width: 30px;
     height: 30px;
     fill: white;
+  }
+  .waterOrigin {
+    li {
+      margin: 10px 15px;
+      padding: 10px 15px;
+      background-color: #fff;
+      border: 1px solid #d9d9d9;
+      .title {
+        font-weight: bold;
+        font-size: 16px;
+        padding-bottom: 2px;
+      }
+      p {
+        line-height: 1.5;
+      }
+      &:after {
+        right: 15px;
+      }
+    }
   }
 }
 </style>

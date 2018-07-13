@@ -2,9 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
 import List from '@/components/base/List'
-import Detail from '@/components/base/Detail'
-import RainCondition from '@/components/rain/RainCondition'
-import WindCondition from '@/components/wind/WindCondition'
+import WaterDetail from '@/components/water/WaterDetail'
+import RainDetail from '@/components/rain/RainDetail'
 
 Vue.use(Router)
 
@@ -13,7 +12,7 @@ const router = new Router({
   routes: [
     {
       path: '/',
-      name: 'Home',
+      name: 'home',
       component: Home,
       meta: {
         title: '水资源'
@@ -21,65 +20,46 @@ const router = new Router({
     },
     {
       path: '/water',
-      name: 'Water',
+      name: 'water',
       component: List,
       meta: {
-        title: '水情信息'
+        title: '取水户取水信息'
       }
     },
     {
       path: '/water/:id',
-      name: 'Detail',
-      component: Detail,
+      name: 'waterDetail',
+      props: (route) => {
+        return {
+          id: route.params.id,
+          name: route.name
+        }
+      },
+      component: WaterDetail,
       meta: {
         title: '水位信息'
       }
     },
     {
       path: '/rain',
-      name: 'Rain',
+      name: 'rain',
       component: List,
       meta: {
-        title: '雨情信息'
-      }
-    },
-    {
-      path: '/rain/RainCondition',
-      name: 'RainCondition',
-      component: RainCondition,
-      meta: {
-        title: '降雨报警说明'
+        title: '水源地'
       }
     },
     {
       path: '/rain/:id',
-      name: 'RainDetail',
-      component: Detail,
+      name: 'rainDetail',
+      props: (route) => {
+        return {
+          id: route.params.id,
+          name: route.name
+        }
+      },
+      component: RainDetail,
       meta: {
         title: '雨位信息'
-      }
-    },
-    {
-      path: '/wind',
-      name: 'Wind',
-      component: List,
-      meta: {
-        title: '风情信息'
-      }
-    },
-    {
-      path: '/wind/WindCondition',
-      name: 'WindCondition',
-      component: WindCondition,
-      meta: {
-        title: '风力等级说明'
-      }
-    },
-    {
-      path: '/wind/:id',
-      name: 'WindDetail',
-      beforeEnter: (to, from, next) => {
-        next(false)
       }
     }
   ]
