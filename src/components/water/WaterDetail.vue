@@ -6,7 +6,7 @@
           <p>开始时间</p>
         </div>
         <div class="weui-cell__ft">
-          <input class="weui-input" v-model="beginDate" @change="getUseDailyByStcd" type="datetime" value="">
+          <input class="weui-input" v-model="beginDate" @change="getUseDailyByStcd" type="date">
         </div>
       </a>
       <a class="weui-cell weui-cell_access" href="javascript:;">
@@ -14,13 +14,13 @@
           <p>结束时间</p>
         </div>
         <div class="weui-cell__ft">
-          <input class="weui-input" v-model="endDate" @change="getUseDailyByStcd" type="datetime" value="">
+          <input class="weui-input" v-model="endDate" @change="getUseDailyByStcd" type="date">
         </div>
       </a>
       <div class="weui-cell weui-cell_select">
         <div class="weui-cell__bd">
           <select class="weui-select" v-model="code" @change="getUseDailyByStcd">
-            <option value="">全部取水口</option>
+            <option value="">取水口</option>
             <option :value="item.code" v-for="item in selectData" :key="item.code">{{item.intNm}}</option>
           </select>
         </div>
@@ -31,7 +31,7 @@
       <div class="chart-wrap" v-if="currentIndex === 0 && tableData.length">
         <div class="subTitle">
           <span>日取水量（m<sup>3</sup>）</span>
-          <span>累计取水量（万m<sup>3</sup>）：{{sumWater}}</span>
+          <span>累计取水量：{{sumWater}}万m<sup>3</sup></span>
         </div>
         <highcharts-column
           :data="chartData"
@@ -93,8 +93,8 @@ export default {
     getUseDailyByStcd () {
       let params = {
         wiucd: this.id,
-        beginDate: this.beginDate.replace('T', ' '),
-        endDate: this.endDate.replace('T', ' '),
+        beginDate: this.beginDate,
+        endDate: this.endDate,
         code: this.code
       }
       api.getUseDailyByStcd(params)

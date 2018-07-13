@@ -23,7 +23,7 @@ const navData = [
   },
   {
     title: '水源地',
-    to: '/rain',
+    to: '/waterOrigin',
     svg: require('@/assets/svg/home-2.svg')
   }
 ]

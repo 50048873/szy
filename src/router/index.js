@@ -3,7 +3,7 @@ import Router from 'vue-router'
 import Home from '@/components/Home'
 import List from '@/components/base/List'
 import WaterDetail from '@/components/water/WaterDetail'
-import RainDetail from '@/components/rain/RainDetail'
+import waterOriginDetail from '@/components/waterOrigin/waterOriginDetail'
 
 Vue.use(Router)
 
@@ -41,15 +41,15 @@ const router = new Router({
       }
     },
     {
-      path: '/rain',
-      name: 'rain',
+      path: '/waterOrigin',
+      name: 'waterOrigin',
       component: List,
       meta: {
         title: '水源地'
       }
     },
     {
-      path: '/rain/:id',
+      path: '/waterOrigin/:id',
       name: 'rainDetail',
       props: (route) => {
         return {
@@ -57,7 +57,7 @@ const router = new Router({
           name: route.name
         }
       },
-      component: RainDetail,
+      component: waterOriginDetail,
       meta: {
         title: '雨位信息'
       }

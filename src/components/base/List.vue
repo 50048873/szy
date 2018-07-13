@@ -52,24 +52,24 @@ export default {
   methods: {
     listClick (item) {
       const parentPath = this.$route.path
-      const name = this.$route.name.toLowerCase()
+      const name = this.$route.name
       switch (name) {
         case 'water':
           this.$router.push({path: `${parentPath}/${item.wiucd}`, query: {title: item.title}})
           break
-        case 'rain':
+        case 'waterOrigin':
           this.$router.push({path: `${parentPath}/${item.stcd}`, query: {title: item.name}})
           break
       }
     },
     handleType () {
-      const name = this.$route.name.toLowerCase()
+      const name = this.$route.name
       switch (name) {
         case 'water':
           this.getWrwibList()
           this.isWater = true
           break
-        case 'rain':
+        case 'waterOrigin':
           this.getWaterList()
           this.isRain = true
           break
