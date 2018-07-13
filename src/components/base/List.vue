@@ -53,16 +53,14 @@ export default {
     listClick (item) {
       const parentPath = this.$route.path
       const name = this.$route.name.toLowerCase()
-      let param
       switch (name) {
         case 'water':
-          param = item.wiucd
+          this.$router.push({path: `${parentPath}/${item.wiucd}`, query: {title: item.title}})
           break
         case 'rain':
-          param = item.stcd
+          this.$router.push({path: `${parentPath}/${item.stcd}`, query: {title: item.name}})
           break
       }
-      this.$router.push({path: `${parentPath}/${param}`, query: {title: item.name}})
     },
     handleType () {
       const name = this.$route.name.toLowerCase()

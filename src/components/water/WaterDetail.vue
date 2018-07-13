@@ -20,7 +20,7 @@
       <div class="weui-cell weui-cell_select">
         <div class="weui-cell__bd">
           <select class="weui-select" v-model="code" @change="getUseDailyByStcd">
-            <option value="">取水户</option>
+            <option value="">全部取水口</option>
             <option :value="item.code" v-for="item in selectData" :key="item.code">{{item.intNm}}</option>
           </select>
         </div>
